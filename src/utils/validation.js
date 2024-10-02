@@ -8,8 +8,27 @@ const validateSignUpData = (req) =>{
     }else if(emailId && !validator.isEmail(emailId)){
         throw new Error ("Email is not valid!");
     }else if(password && !validator.isStrongPassword(password)){
-        throw new Error ("Invalid credentails !!");
+        throw new Error ("Invalid !!");
     }
 }
 
-module.exports = {validateSignUpData}
+const validateProfileData = (req) =>{
+    const allowedEditFields = [
+        "firstName",
+        "lastName",
+        "emailId",
+        "photoUrl",
+        "gender",
+        "age",
+        "about",
+        "skills",
+      ];
+    
+      const isEditAllowed = Object.keys(req.body).every((field) =>
+        allowedEditFields.includes(field)
+      );
+    
+      return isEditAllowed;
+}
+
+module.exports = {validateSignUpData,validateProfileData}
