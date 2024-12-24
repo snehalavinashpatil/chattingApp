@@ -9,12 +9,37 @@ const {userAuthentication} = require("../middleware/auth");
 requestRouter.get("/User",async (req,res)=>{
     const email = req.body.emailId;
     try{
-     const userData =   await  User.find({emailId:email});
+     const userData =   await  User.findOne({emailId:email});
      res.send(userData);
     }catch(err){
        err.status(400).send("something went wrong");
     }
    
+});
+
+//Delete user by ID
+requestRouter.delete("/User",async (req,res)=>{
+  const userId = req.body.userId;
+  try{
+   await User.findByIdAndDelete(userId);
+   res.send("user deleted successfuly..");
+  }catch(err){
+     err.status(400).send("something went wrong");
+  }
+ 
+});
+
+//Update user by ID
+requestRouter.patch("/User",async (req,res)=>{
+  const userId = req.body.userId;
+  const data=req.body;
+  try{
+   await User.findByIdAndUpdate({_id:userId},data);
+   res.send("user updated successfuly..");
+  }catch(err){
+     err.status(400).send("something went wrong");
+  }
+ 
 });
 
 
@@ -24,22 +49,20 @@ requestRouter.patch("/user/:userId",async (req,res) =>{
     const data = req.body;
     const ALLOWED_UPDATES = ["company","photoUrl","about","skills"];
 
-    const isUpdateAllowed = Object.keys(data).every((item)=>{
-        ALLOWED_UPDATES.includes(item);
-    });
-
+    const isUpdateAllowed = Object.keys(data).every((item)=>ALLOWED_UPDATES.includes(item));
+console.log(isUpdateAllowed,'isUpdateAllowed');
     if(!isUpdateAllowed){
-        res.send(400).send("update not allowed");
+        res.status(400).send("update not allowed 1");
     }
 
     try {
-      const user = await User.findByIdAndUpdate({id:userId},data,{
+     await User.findByIdAndUpdate({_id:userId},data,{
         returnDocument:"after",
         runValidators:true
       });
       res.send("User Updated Successfuly");
     }catch(err) {
-      res.send(400).send("Update failed"+err.message);
+      res.status(400).send("Update failed"+err.messaage);
     }
 });
 

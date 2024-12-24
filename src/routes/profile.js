@@ -1,5 +1,6 @@
 const express = require("express");
 const profileRouter = express.Router();
+const User = require("../models/user");
 const {userAuthentication} = require("../middleware/auth");
 
 profileRouter.get("/profile/view",userAuthentication,async (req,res)=>{
@@ -39,13 +40,14 @@ profileRouter.patch("/profile/edit",userAuthentication,async (req,res)=>{
       }
 });
 
-    profileRouter.get("/feed",async (req,res)=>{
-    
+profileRouter.get("/feed",async (req,res)=>{
+    console.log(req,'req');
         try{
-            const userData =   await  User.find({});
-            res.send(userData);
+            const users =   await  User.find({});
+            res.send(users);
+            console.log(User);
            }catch(err){
-              err.status(400).send("something went wrong");
+              res.status(400).send("something went wrong 1...");
            }
     });
     

@@ -56,14 +56,16 @@ authRouter.post("/login",async (req,res)=>{
         if(!user){
             throw new Error ("eMail not present");
         }
-
-        const isValid = await bcrypt.compare(password,user.password);
-    
+console.log(password,user.password);
+        const isValid = await user.validatePassword(password);
+       
+        console.log(isValid,'isValid outside loop');
         if(isValid){
-
+           console.log(isValid,'isValid inside lopp');
             //create jwt token
-            var token = await user.getJWT();
-           
+            const token = await user.getJWT();
+            console.log(token,'token');
+            console.log(isValid,'isValid inside loop',token);
             //add token to cookie and send response back to server
             res.cookie('token', token)
 
