@@ -87,7 +87,7 @@ try{
     return res.status(400).send("connection request already exists");
   }
 
-  //check if use id is invalid
+  //check if use id is invalid/check if to userID exists or not 
   const toUser = await User.findById(toUserId);
   console.log(toUser,'toUser');
   if(!toUser){
@@ -107,10 +107,7 @@ try{
 }
 })
 
-requestRouter.post(
-  "/request/review/:status/:requestId",
-  userAuthentication,
-  async (req, res) => {
+requestRouter.post("/request/review/:status/:requestId",userAuthentication,async (req, res) => {
     try {
       const loggedInUser = req.user;
       const { status, requestId } = req.params;

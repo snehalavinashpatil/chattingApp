@@ -14,8 +14,9 @@ const userSchema = new mongoose.Schema({
     emailId:{
         type:String,
         require:true,
-        unique:true,
+        unique:true,//automaticaly creates index for unique:true
         lowerCase:true,
+        trim:true,
         validator(value){
             if(!validator.isEmail(value)){
                 throw new Error("Invalid Error: "+value);
@@ -39,11 +40,16 @@ const userSchema = new mongoose.Schema({
         type:String
     },
     gender:{
-        type:String,validate(value){
-            if(!["Male","Femal"].includes(value)){
-                throw new Error ("Gender Not Available !!!");
-            }
-        }
+        type:String,
+        enum: {
+            values: ["Male","Femal"],
+            message: `{VALUE} Gender Not Available !!!`,
+          }
+        // ,validate(value){
+        //     if(!["Male","Femal"].includes(value)){
+        //         throw new Error ("Gender Not Available !!!");
+        //     }
+        // }
     },
     photoUrl:{
         type:String,
@@ -75,8 +81,7 @@ userSchema.methods.validatePassword = async function (passwordInputByUser) {
       passwordInputByUser,
       passwordHash
     );
-  
-    return isPasswordValid;
+  return isPasswordValid;
   };
 
 module.exports = mongoose.model('user',userSchema);

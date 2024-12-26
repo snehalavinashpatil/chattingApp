@@ -20,14 +20,14 @@ authRouter.post('/signup',async (req,res)=>{
     //     gender:'Male'
     // };
     
-    //validate
-   validateSignUpData(req);
     //console.log(validateSignUpData(req),'validateSignUpData(req)');
    
 
     const {fname,lname,password,emailId,age,company,gender} = req.body;
 
    try {
+     //validate
+   validateSignUpData(req);
     //encript
    const encriptedPassword = await bcrypt.hash(password,10);
 
@@ -56,16 +56,11 @@ authRouter.post("/login",async (req,res)=>{
         if(!user){
             throw new Error ("eMail not present");
         }
-console.log(password,user.password);
         const isValid = await user.validatePassword(password);
-       
-        console.log(isValid,'isValid outside loop');
         if(isValid){
-           console.log(isValid,'isValid inside lopp');
+            
             //create jwt token
             const token = await user.getJWT();
-            console.log(token,'token');
-            console.log(isValid,'isValid inside loop',token);
             //add token to cookie and send response back to server
             res.cookie('token', token)
 
