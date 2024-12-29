@@ -44,11 +44,11 @@ profileRouter.patch("/profile/edit",userAuthentication,async (req,res)=>{
 });
 
 profileRouter.get("/feed",userAuthentication,async (req,res)=>{
-    console.log(req,'req');
+   // console.log(req,'req');
         try{
             const users =   await  User.find({});
             res.send(users);
-            console.log(User);
+            //console.log(User);
            }catch(err){
               res.status(400).json({message:err.message});
            }

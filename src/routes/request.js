@@ -50,7 +50,7 @@ requestRouter.patch("/user/:userId",async (req,res) =>{
     const ALLOWED_UPDATES = ["company","photoUrl","about","skills"];
 
     const isUpdateAllowed = Object.keys(data).every((item)=>ALLOWED_UPDATES.includes(item));
-console.log(isUpdateAllowed,'isUpdateAllowed');
+//console.log(isUpdateAllowed,'isUpdateAllowed');
     if(!isUpdateAllowed){
         res.status(400).send("update not allowed 1");
     }
@@ -89,7 +89,7 @@ try{
 
   //check if use id is invalid/check if to userID exists or not 
   const toUser = await User.findById(toUserId);
-  console.log(toUser,'toUser');
+  //console.log(toUser,'toUser');
   if(!toUser){
     res.status(404).json({message:"user not found"+status});
   }
@@ -111,7 +111,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuthentication,async
     try {
       const loggedInUser = req.user;
       const { status, requestId } = req.params;
-      console.log(requestId,'requestId',status);
+      //console.log(requestId,'requestId',status);
 
       const allowedStatus = ["accepted", "rejected"];
       if (!allowedStatus.includes(status)) {

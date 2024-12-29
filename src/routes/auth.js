@@ -34,15 +34,19 @@ authRouter.post('/signup',async (req,res)=>{
         const user = new User({
             fname,lname,password:encriptedPassword,emailId,age,company,gender
         });
-        console.log(user,'user testing');
+        //console.log(user,'user testing');
        // const user = new User(userObj);
-        await user.save();
-        const token = await jwt.sign({ _id:user._id }, "snehal@1994");
-        console.log(token,'token');
-        res.cookie("token", token);
-        res.send("user added successfuly");
+       const savedUser = await user.save();
+       const token = await savedUser.getJWT();
+       // console.log(token,'token');
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
+          });
+          res.json({ message: "User Added successfully!", data: savedUser });
     }catch(err){
-       res.status(400).send("Bad request");
+        res.status(400).send("ERROR : " + err.message);
     }
 
 });
@@ -54,7 +58,8 @@ authRouter.post("/login",async (req,res)=>{
     const user = await User.findOne({ emailId: emailId });
         
         if(!user){
-            throw new Error ("eMail not present");
+            //throw new Error ("eMail not present");
+            return res.status(401).send('User not loggin..');
         }
         const isValid = await user.validatePassword(password);
         if(isValid){
@@ -62,9 +67,13 @@ authRouter.post("/login",async (req,res)=>{
             //create jwt token
             const token = await user.getJWT();
             //add token to cookie and send response back to server
-            res.cookie('token', token)
-
-            res.send("Login successful");
+            res.cookie("token", token, {
+                expires: new Date(Date.now() + 8 * 3600000),
+                httpOnly: true,
+                secure: true,
+                sameSite: 'None',
+              });
+            res.send(user);
         }else{
             throw new Error ("Password is not correct !");
         }
