@@ -6,11 +6,13 @@ const {validateProfileData} = require("../utils/validation");
 const ConnectionRequest = require("../models/connectionRequest");
 const mongoose = require("mongoose");
 
+const USER_SAFE_DATA = "fname lname photoUrl age gender about skills";
+
 profileRouter.get("/profile/view",userAuthentication,async (req,res)=>{
-    console.log("profile");
+    //console.log("profile");
     try {
        const user =await req.user;
-       console.log(user,"user profile");
+       //console.log(user,"user profile");
     if(!user){
         throw new Error ("Invalid User");
     }
@@ -44,14 +46,38 @@ profileRouter.patch("/profile/edit",userAuthentication,async (req,res)=>{
 });
 
 profileRouter.get("/feed",userAuthentication,async (req,res)=>{
-   // console.log(req,'req');
-        try{
-            const users =   await  User.find({});
-            res.send(users);
-            //console.log(User);
-           }catch(err){
-              res.status(400).json({message:err.message});
-           }
+  try {
+    const loggedInUser = req.user;
+
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
+
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId  toUserId");
+
+    const hideUsersFromFeed = new Set();
+    connectionRequests.forEach((req) => {
+      hideUsersFromFeed.add(req.fromUserId.toString());
+      hideUsersFromFeed.add(req.toUserId.toString());
+    });
+
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(hideUsersFromFeed) } },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    })
+      .select(USER_SAFE_DATA)
+      .skip(skip)
+      .limit(limit);
+
+    res.json({ data: users });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
     });
 
     //show profiles of people not connected yet and his own card

@@ -107,6 +107,8 @@ try{
 }
 })
 
+const mongoose = require("mongoose");
+
 requestRouter.post("/request/review/:status/:requestId",userAuthentication,async (req, res) => {
     try {
       const loggedInUser = req.user;
@@ -117,21 +119,25 @@ requestRouter.post("/request/review/:status/:requestId",userAuthentication,async
       if (!allowedStatus.includes(status)) {
         return res.status(400).json({ messaage: "Status not allowed!" });
       }
+    //console.log(requestId,'requestId',loggedInUser._id,status);
+    const connectionRequest = await ConnectionRequest.findOne({
+      _id: requestId, // Mongoose will cast this string to ObjectId
+      toUserId: loggedInUser._id, // Mongoose will cast this string to ObjectId
+      status: "interested",
+    });
+    
+      //console.log(connectionRequest,'connectionRequest');
 
-      const connectionRequest = await ConnectionRequest.findOne({
-        _id: requestId,
-        toUserId: loggedInUser._id,
-        status: "interested",
-      });
       if (!connectionRequest) {
         return res
           .status(404)
-          .json({ message: "Connection request not found" });
+          .json({ message: "Connection request not found!!!" });
       }
 
       connectionRequest.status = status;
 
       const data = await connectionRequest.save();
+      //console.log(data,'data');
 
       res.json({ message: "Connection request " + status, data });
     } catch (err) {

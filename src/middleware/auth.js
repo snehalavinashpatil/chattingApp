@@ -19,11 +19,11 @@ app.use(cookieParser()); // Use cookie-parser middleware
 
 const userAuthentication = async (req,res,next)=> {
     try{
-        console.log('Cookies:', req.cookies);
+        //console.log('Cookies:', req.cookies);
 
         const token = req.cookies.token;
     //validate token
-   // console.log(token,'token');
+    console.log(token,'token',req.cookies);
     //console.log(req.cookies, 'Cookies from client');
     //console.log(req.headers.cookie, 'Raw cookie header',res.cookie);
     
