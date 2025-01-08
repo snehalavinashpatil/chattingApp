@@ -6,8 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+     "build": "nodemon src/app.js build"
   },
+  "keywords": [
+    "nodejs",
+    "javascript"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
