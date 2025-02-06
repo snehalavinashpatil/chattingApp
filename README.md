@@ -12,3 +12,8 @@ https://reactrouter.com/tutorials/address-book
 https://tailwindcss.com/docs/guides/vite
 https://vite.dev/guide/#scaffolding-your-first-vite-project
 https://mongoosejs.com/docs/search.html?q=compound%20index
+
+https://nginx.org/en/linux_packages.html
+https://pm2.keymetrics.io/docs/usage/startup/
+https://us-east-2.console.aws.amazon.com/ses/home?region=us-east-2#/onboarding-wizard
+https://www.npmjs.com/package/dotenv
